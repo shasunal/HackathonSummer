@@ -1,7 +1,12 @@
+import Earth from "../components/Earth"
 
 
 function Home(){
- return <div>Lalaa</div>
+ return <div>
+ <Earth/>
+ 
+    
+    </div>
     
 }
 
