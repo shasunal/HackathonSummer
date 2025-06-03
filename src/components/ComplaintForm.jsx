@@ -14,7 +14,7 @@ function ComplaintForm() {
 
         try {
             // ✅ Use relative path — Vite proxy handles the backend redirect
-            const response = await fetch('/complaintSubmit', {
+            const response = await fetch('http://localhost:5000/complaintSubmit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -28,13 +28,14 @@ function ComplaintForm() {
 
             if (response.ok) {
                 navigate('/map');
-            } else {
+              } else {
+                console.error('❌ Backend error:', data);
                 alert(data.message || 'Submission failed');
+              }
+            } catch (err) {
+              console.error('❌ Fetch failed:', err);
+              alert('Could not reach server');
             }
-        } catch (error) {
-            console.error('Submission error:', error);
-            alert('Server error');
-        }
     };
 
     return <div className = "form-popup">

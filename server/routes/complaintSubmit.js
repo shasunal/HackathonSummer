@@ -3,6 +3,7 @@ import Complaint from '../models/Complaint.js';
 
 const router = express.Router();
 router.post('/complaintSubmit', async (req, res) => {
+    console.log('Incoming request:', req.body);
     try {
         const { email, zipcode, complaint } = req.body;
 
