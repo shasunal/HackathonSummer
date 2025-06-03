@@ -7,26 +7,7 @@ import complaintRoutes from './routes/complaintSubmit.js';
 dotenv.config();
 
 const app = express();
-
-const allowedOrigins = [
-  'http://localhost:5173/',
-  'http://127.0.0.1:5173/',
-  'http://71.167.33.223:5173/', // Replace with your actual IP
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use('/', complaintRoutes);
 
