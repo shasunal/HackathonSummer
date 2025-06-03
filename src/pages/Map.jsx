@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import '../css/Map.css';
 
@@ -7,6 +7,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhc3VuYSIsImEiOiJjbWJheDkzankxYmNvMnFva24wb
 function Map(){
   const mapContainer = useRef(null);//connect to DOM
   const map = useRef(null); //the map
+  const [zipCode, setZipCode] = useState('');
 
   //initialize
   useEffect(() =>{
