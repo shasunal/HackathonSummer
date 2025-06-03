@@ -13,26 +13,27 @@ function ComplaintForm() {
         e.preventDefault();
 
         try {
-        const response = await fetch('http://localhost:5000/complaintSubmit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-            email: emailInput,
-            zipcode: zipInput,
-            complaint: complaintInput
-            }),
-        });
+            // ✅ Use relative path — Vite proxy handles the backend redirect
+            const response = await fetch('/complaintSubmit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: emailInput,
+                    zipcode: zipInput,
+                    complaint: complaintInput
+                }),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            navigate('/map');
-        } else {
-            alert(data.message || 'Login failed');
-        }
+            if (response.ok) {
+                navigate('/map');
+            } else {
+                alert(data.message || 'Submission failed');
+            }
         } catch (error) {
-        console.error('Login error:', error);
-        alert('Server error');
+            console.error('Submission error:', error);
+            alert('Server error');
         }
     };
 
