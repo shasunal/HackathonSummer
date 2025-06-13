@@ -73,3 +73,17 @@ button:hover {
   .continue-link:hover {
     text-decoration: underline;
   }
+
+  .loading-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #00b4d8, #90e0ef, #00b4d8);
+  background-size: 200% 100%;
+  animation: slide 1s linear infinite;
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+
+@keyframes slide {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}

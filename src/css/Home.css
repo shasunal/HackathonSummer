@@ -1,0 +1,24 @@
+.analysis-result {
+  background-color: #111;
+  color: #eee;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.analysis-result pre {
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+  line-height: 1.4;
+}
+
+.fade-in {
+  animation: fadeIn 1s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
