@@ -1,9 +1,12 @@
-import '../css/Earth.css'
+import '../css/Earth.css';
 
-function Earth(){
-    return <video width="640" height="360" controls="autoPlay">
-      <source src="/videos/SpinningEarth.mp4" type="video/mp4" />
-    </video>
+function Earth({zoom}){
+  return(
+    <img src="/content/Earth.png" 
+      alt="Earth" 
+      className={`earth-img ${zoom ? 'zoom' : ''}`} 
+    />
+  );
 }
 
-export default Earth
+export default Earth;

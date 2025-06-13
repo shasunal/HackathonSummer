@@ -2,9 +2,14 @@ import '../css/ComplaintForm.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
+import Earth from './Earth';
+
+
 
 function ComplaintForm({missingInfo}) {
     const [complaintInput, setComplaintInput] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,7 +32,7 @@ function ComplaintForm({missingInfo}) {
                 if (response.status === 400 && data.message?.startsWith("Missing")) {
                     alert("GPT says: " + data.message);
 
-                    // 🟢 Send GPT message to /followup page using state
+                    //  Send GPT message to /followup page using state
                     navigate('/', {
                     state: {
                         missingInfo: data.message
@@ -40,32 +45,51 @@ function ComplaintForm({missingInfo}) {
             }
 
             // If submission and GPT passed
-            navigate('/'); // or wherever you go on success
+            setSubmitted(true);
+            setTimeout(() => {
+            navigate('/map');
+            }, 1500);
+
         } catch (err) {
             console.error('❌ Fetch failed:', err);
             alert('Could not reach server');
         }
     };
 
+return(
+    <>
+  {/* Earth image with zoom */}
+  <Earth zoom={submitted} />
 
-    return <div className = "form-popup">
-            <form onSubmit={handleSubmit}>
-    
-                <div className = "form-group">
-                    <label htmlFor="complaint"> 
-                        <span>
-                            {!missingInfo ?
-                            ("Tell us about your trip in NYC. We'll make it safe.")
-                            :(missingInfo) }
-
-                        </span>
-                    </label>
-                    <textarea id="complaint" rows="4" value={complaintInput} onChange={(e) => setComplaintInput(e.target.value)} required></textarea>
-                </div>
-                <button type="submit">Submit</button>
-                <Link to="/map" className="continue-link">continue to site</Link>
-            </form>
+  {/* Only show the form if not submitted */}
+  {!submitted && (
+    <div className="form-popup fade-in">
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="complaint"> 
+            <span>
+              {!missingInfo
+                ? "Tell us about your trip in NYC. We'll make it safe."
+                : missingInfo}
+            </span>
+          </label>
+          <textarea
+            id="complaint"
+            rows="4"
+            value={complaintInput}
+            onChange={(e) => setComplaintInput(e.target.value)}
+            required
+          ></textarea>
         </div>
+        <div className="form-actions">
+          <button type="submit">Submit</button>
+          <Link to="/map" className="continue-link">continue to site</Link>
+        </div>
+      </form>
+    </div>
+  )}
+</>
+);
 }
 
 export default ComplaintForm
