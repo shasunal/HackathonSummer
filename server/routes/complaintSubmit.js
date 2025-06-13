@@ -3,21 +3,29 @@ import Complaint from '../models/Complaint.js';
 
 const router = express.Router();
 router.post('/complaintSubmit', async (req, res) => {
-    console.log('Incoming request:', req.body);
     try {
-        const { email, zipcode, complaint } = req.body;
+        // const { email, zipcode, complaint } = req.body;
 
-        if (!email || !zipcode || !complaint) {
-            return res.status(400).json({ message: 'Missing required fields' });
+        const {complaint } = req.body;
+
+        // if (!email || !zipcode || !complaint) {
+        //     return res.status(400).json({ message: 'Missing required fields' , prompt: "Penis was missing"});
+        // }
+
+        // const newComplaint = new Complaint({
+        //     email,
+        //     zipcode,
+        //     complaint,
+        // });
+
+        //Chatgpt Code
+        // ⛔ TEMPORARY TEST MODE: Always simulate missing info
+        const isFollowup = complaint.includes('[followup]');
+        if (!isFollowup) {
+            return res.status(400).json({ message: "Missing key info: time of day and location" });
         }
 
-        const newComplaint = new Complaint({
-            email,
-            zipcode,
-            complaint,
-        });
-
-        await newComplaint.save();
+        //await newComplaint.save();
 
         res.status(201).json({ message: 'Complaint uploaded successfully!', complaint: newComplaint });
     } catch (err) {
