@@ -1,33 +1,79 @@
 import express from 'express';
-import Complaint from '../models/Complaint.js';
+import OpenAI from 'openai';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const router = express.Router();
+
+//API Key for Chatgpt
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 router.post('/complaintSubmit', async (req, res) => {
     try {
-        // const { email, zipcode, complaint } = req.body;
+        const {complaint} = req.body;
 
-        const {complaint } = req.body;
-
-        // if (!email || !zipcode || !complaint) {
-        //     return res.status(400).json({ message: 'Missing required fields' , prompt: "Penis was missing"});
-        // }
-
-        // const newComplaint = new Complaint({
-        //     email,
-        //     zipcode,
-        //     complaint,
-        // });
-
-        //Chatgpt Code
-        // ⛔ TEMPORARY TEST MODE: Always simulate missing info
-        const isFollowup = complaint.includes('[followup]');
-        if (!isFollowup) {
-            return res.status(400).json({ message: "Missing key info: time of day and location" });
+        if (!complaint) {
+            return res.status(400).json({ message: 'Missing complaint text' });
         }
 
-        //await newComplaint.save();
+        //First GPT prompt: Check for key info
+        const gptCheckPrompt = `
+            A user submitted: "${complaint}"
 
-        res.status(201).json({ message: 'Complaint uploaded successfully!', complaint: newComplaint });
+            You are a public safety assistant. Check if this includes:
+            - Location (neighborhood, zip, borough)
+            - Time of day (e.g., night, 10pm)
+            - User context (gender and/or age)
+
+            If anything is missing, reply: "Missing: [what’s missing]".
+            If everything is present, reply: "All good".
+        `;
+
+        const checkResponse = await openai.chat.completions.create({
+            model: "gpt-4",
+            messages: [
+                { role: "system", content: "You help NYC users assess safety risk based on what they submit." },
+                { role: "user", content: gptCheckPrompt }
+            ],
+            temperature: 0.2,
+        });
+
+        const checkResult = checkResponse.choices[0].message.content.trim();
+
+        //GPT says we need more info
+        if (checkResult.toLowerCase().startsWith("missing")) {
+            return res.status(400).json({ message: checkResult });
+        }
+
+        //Second GPT prompt: Full safety analysis
+        const safetyAnalysisPrompt = `
+            Analyze the following safety situation:
+
+            "${complaint}"
+
+            Step-by-step, do the following:
+            1. Extract user demographics and travel context.
+            2. Identify safety risks based on NYC context (use known public safety info).
+            3. Suggest if it's safe or not and why.
+            4. Offer safety advice (e.g., travel in a group, avoid certain hours, etc.).
+
+            Format the result clearly for users.
+        `;
+
+        const safetyResponse = await openai.chat.completions.create({
+            model: "gpt-4",
+            messages: [
+                { role: "system", content: "You analyze NYC safety requests step-by-step." },
+                { role: "user", content: safetyAnalysisPrompt }
+            ],
+            temperature: 0.7,
+        });
+
+        const finalAnalysis = safetyResponse.choices[0].message.content.trim();
+
+        return res.status(201).json({ message: "Analysis complete", result: finalAnalysis });
     } catch (err) {
         console.error('Error saving Complaint:', err);
         res.status(500).json({ message: 'Server error during Complaint upload' });
