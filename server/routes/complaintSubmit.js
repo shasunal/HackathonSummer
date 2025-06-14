@@ -72,8 +72,9 @@ router.post('/complaintSubmit', async (req, res) => {
         });
 
         const finalAnalysis = safetyResponse.choices[0].message.content.trim();
-
-        return res.status(201).json({ message: "Analysis complete", result: finalAnalysis });
+        const zipcode = "10010";
+        
+        return res.status(201).json({ message: "Analysis complete", result: finalAnalysis, zipcode: zipcode });
     } catch (err) {
         console.error('Error saving Complaint:', err);
         res.status(500).json({ message: 'Server error during Complaint upload' });
