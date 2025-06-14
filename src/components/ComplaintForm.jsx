@@ -31,7 +31,7 @@ function ComplaintForm({ missingInfo, onResult }) {
             }
 
             setSubmitted(true);
-            onResult(data.result, null);
+            onResult(data.result, null, data.zipcode);
 
         } catch (err) {
             console.error('❌ Fetch failed:', err);

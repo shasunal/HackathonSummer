@@ -1,19 +1,59 @@
-.map-container{
+.map-container {
     display: flex;
     height: 100vh;
-    width:100vw;
-}
-
-.sidebar{
-    width:25%;
-    flex-direction:column;
-    display: flex;
-    padding: 2rem ;
-    background-color: gainsboro;
-    
-}
-
-.map-area{
-    width: 75%;
+    width: 100vw;
+  }
+  
+  .sidebar {
+    background-color: rgb(180, 183, 203);
     height: 100vh;
-}
+    position: relative;
+    transition: width 0.3s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+  }
+  
+  .sidebar.expand {
+    width: 25%;
+  }
+  
+  .sidebar.collapse {
+    width: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .toggle-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1000;
+    background-color: rgb(80, 85, 135);
+  }
+  
+  .toggle-btn {
+    width: 30px;
+    height: 30px;
+   
+    color: rgb(255, 255, 255);
+    border-radius: 0 5px 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  
+  
+  
+  .map-area {
+    flex-grow: 1;
+    height: 100vh;
+  }
+  
