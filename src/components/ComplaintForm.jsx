@@ -22,12 +22,12 @@ function ComplaintForm({ missingInfo, onResult }) {
             const data = await response.json();
 
             if (!response.ok) {
-            if (response.status === 400 && data.message?.startsWith("Missing")) {
-                onResult(null, data.message);
-            } else {
-                alert(data.message || 'Submission failed');
-            }
-            return;
+                if (response.status === 400 && data.message?.startsWith("Missing")) {
+                    onResult(null, data.message);
+                } else {
+                    alert(data.message || 'Submission failed');
+                }
+                return;
             }
 
             setSubmitted(true);
@@ -55,9 +55,7 @@ return(<>
                 <div className="form-group">
                     <label htmlFor="complaint"> 
                         <span>
-                            {!missingInfo
-                            ? "Tell us about your trip in NYC. We'll make it safe."
-                            : missingInfo}
+                            {!missingInfo ? "Tell us about your trip in NYC. We'll make it safe." : missingInfo}
                         </span>
                     </label>
                     <textarea

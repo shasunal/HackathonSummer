@@ -126,18 +126,18 @@ function Map(){
   },[]);
 
   return (
-<div className="map-container">
-      <div className="sidebar">
-        <h1 className="title">Community Block</h1>
-        <label htmlFor="zip-search">search by zip code</label>
-        <input id="zip-search" type="text" placeholder="e.g. 10010" />
-        <div className="issues">
-          <h2>Top Issues</h2>
-          <p>Summary of complaints</p>
-        </div>
-    </div>
+    <div className="map-container">
+          <div className="sidebar">
+            <h1 className="title">Community Block</h1>
+            <label htmlFor="zip-search">search by zip code</label>
+            <input id="zip-search" type="text" placeholder="e.g. 10010" />
+            <div className="issues">
+              <h2>Top Issues</h2>
+              <p>Summary of complaints</p>
+            </div>
+          </div>
 
-    <div className="map-area" ref={mapContainer} />
+        <div className="map-area" ref={mapContainer} />
     </div>
   );
 }
