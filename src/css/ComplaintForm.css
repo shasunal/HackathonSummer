@@ -74,7 +74,7 @@ button:hover {
     text-decoration: underline;
   }
 
-  .loading-bar {
+.loading-bar {
   height: 4px;
   background: linear-gradient(90deg, #00b4d8, #90e0ef, #00b4d8);
   background-size: 200% 100%;
