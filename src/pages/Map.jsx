@@ -137,7 +137,7 @@ function Map(){
             </div>
           </div>
 
-        <div className="map-area" ref={mapContainer} />
+          <div className="map-area" ref={mapContainer} />
     </div>
   );
 }
