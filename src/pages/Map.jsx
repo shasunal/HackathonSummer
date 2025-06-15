@@ -69,9 +69,6 @@ function Map() {
     }
     
   };
-  
-
-
 
   useEffect(() => {
     map.current = new mapboxgl.Map({
