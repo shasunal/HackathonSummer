@@ -1,80 +1,102 @@
 import express from 'express';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import { getFilteredData } from '../utils/getFilteredData.js';
 
 dotenv.config();
 const router = express.Router();
 
-//API Key for Chatgpt
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 router.post('/complaintSubmit', async (req, res) => {
-    try {
-        const {complaint} = req.body;
+  try {
+    const { complaint } = req.body;
+    if (!complaint) return res.status(400).json({ message: 'Missing complaint text' });
 
-        if (!complaint) {
-            return res.status(400).json({ message: 'Missing complaint text' });
+    // 🧠 Step 1: GPT checks info and picks fields
+    const checkPrompt = `
+        A user submitted this: "${complaint}"
+
+        You are a public safety assistant.
+
+        First, check if the user has included:
+        - A location (zip code, neighborhood, or borough)
+        - A time of day (e.g. morning, night)
+        - User context (gender and/or age)
+
+        If anything is missing, return:
+        {
+        "status": "missing",
+        "missing": ["what’s missing here"]
         }
 
-        //First GPT prompt: Check for key info
-        const gptCheckPrompt = `
-            A user submitted: "${complaint}"
-
-            You are a public safety assistant. Check if this includes:
-            - Location (neighborhood, zip, borough)
-            - Time of day (e.g., night, 10pm)
-            - User context (gender and/or age)
-
-            If anything is missing, reply: "Missing: [what’s missing]".
-            If everything is present, reply: "All good".
-        `;
-
-        const checkResponse = await openai.chat.completions.create({
-            model: "gpt-4",
-            messages: [
-                { role: "system", content: "You help NYC users assess safety risk based on what they submit." },
-                { role: "user", content: gptCheckPrompt }
-            ],
-            temperature: 0.2,
-        });
-
-        const checkResult = checkResponse.choices[0].message.content.trim();
-
-        //GPT says we need more info
-        if (checkResult.toLowerCase().startsWith("missing")) {
-            return res.status(400).json({ message: checkResult });
+        If all info is present, return:
+        {
+        "status": "complete",
+        "selected_fields": ["pick 3–5 most relevant fields from the schema below"]
         }
 
-        //Second GPT prompt: Full safety analysis
-        const safetyAnalysisPrompt = `
-            Analyze the following safety situation:
+        Schema:
+        - zip_code
+        - precincts_in_zip
+        - dominant_precinct
+        - violent_crime_count
+        - violent_crimes_by_victim_gender
+        - crime_rate_by_tour
+        - avg_police_response_time
+        - average_street_visibility
+        - last_updated
+    `;
 
-            "${complaint}"
+    const gptResponse = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: "You are a structured and helpful assistant." },
+        { role: "user", content: checkPrompt }
+      ]
+    });
 
-            Step-by-step, do the following:
-            1. Extract user demographics and travel context.
-            2. Identify safety risks based on NYC context (use known public safety info).
-            3. Suggest if it's safe or not and why.
-            4. Offer safety advice (e.g., travel in a group, avoid certain hours, etc.).
+    const parsed = JSON.parse(gptResponse.choices[0].message.content.trim());
 
-            Format the result clearly for users.
-        `;
+    if (parsed.status === "missing") {
+      return res.status(200).json(parsed); // tell frontend to reprompt
+    }
 
-        const safetyResponse = await openai.chat.completions.create({
-            model: "gpt-4",
-            messages: [
-                { role: "system", content: "You analyze NYC safety requests step-by-step." },
-                { role: "user", content: safetyAnalysisPrompt }
-            ],
-            temperature: 0.7,
-        });
+    const selectedFields = parsed.selected_fields;
 
-        const finalAnalysis = safetyResponse.choices[0].message.content.trim();
+    // 📦 Step 2: Query MongoDB using selected fields
+    const filteredData = await getFilteredData(complaint, selectedFields); // function you will define
+
+    if (!filteredData || filteredData.length === 0) {
+      return res.status(404).json({ message: "No relevant data found for this query." });
+    }
+
+    // 📢 Step 3: Final GPT summary based on filtered data
+    const summaryPrompt = `
+        The user submitted this safety concern: "${complaint}"
+
+        You have access to filtered NYC public safety data:
+        ${JSON.stringify(filteredData, null, 2)}
+
+        Give a **brief and clear summary** of whether it is safe for this person to travel there. Base your response on crime levels, time of day, and the user's context (gender/age). Avoid excessive detail. Max 7 sentences.
+    `;
+
+    const summaryResponse = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: "You summarize filtered NYC safety data." },
+        { role: "user", content: summaryPrompt }
+      ]
+    });
         const zipcode = "10010";
-        
-        return res.status(201).json({ message: "Analysis complete", result: finalAnalysis, zipcode: zipcode });
+        const finalSummary = summaryResponse.choices[0].message.content.trim();
+
+        return res.status(200).json({
+          status: "complete",
+          summary: finalSummary,
+          rawData: filteredData,
+          zipcode: zipcode
+        });
     } catch (err) {
         console.error('Error saving Complaint:', err);
         res.status(500).json({ message: 'Server error during Complaint upload' });
