@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import '../css/Map.css';
 import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhc3VuYSIsImEiOiJjbWJheDkzankxYmNvMnFva24wbDdydzdmIn0.moK-KHgAgxougSg_m-QzSQ';
 
@@ -75,7 +76,7 @@ function Map() {
   useEffect(() => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: 'mapbox://styles/mapbox/navigation-guidance-night-v4',
       center: [-74.006, 40.7128],
       zoom: 10,
     });
@@ -108,7 +109,7 @@ function Map() {
           'line-color': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
-            '#000000',
+            '#ffffff',
             'transparent',
           ],
           'line-width': [
@@ -194,34 +195,42 @@ function Map() {
       
         {isExpanded && (
           <>
-            <h1 className="title">Community Block</h1>
-            <label htmlFor="zip-search">search by zip code</label>
-            <input
-            id="zip-search"
-            type="text"
-            placeholder="e.g. 10010"
-            value={zipCode}
-            onChange={(e) => setZipCode(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleZipSearch();
-            }}
-          />
+
+            <a href="/" className ='title'>BlockWatch</a>
+              <label htmlFor="zip-search">Search by zip code</label>
+              <input
+              id="zip-search"
+              type="text"
+              placeholder="e.g. 10010"
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleZipSearch();
+              }}
+            />
 
 
             <div className="issues">
-              <h2>Top Issues</h2>
-              <p>{analysis}</p>
+              <h2>What you need to know </h2>
+              <p className = "paragraph">{analysis}</p>
+            </div>
+
+            <div className="backBtn">
+                <Link to="/" className="back-button">Submit another request</Link>
             </div>
           </>
         )}
+
+  <div className="toggle-wrapper">
+        <div className="toggle-btn" onClick={toggleSidebar}>
+          {isExpanded ? "◀" : "▶"}
+        </div>
       </div>
 
-      <div className="toggle-wrapper">
-    <div className="toggle-btn" onClick={toggleSidebar}>
-      {isExpanded ? "◀" : "▶"}
-    </div>
-  </div>
+      </div>
 
+     
+      
       <div className="map-area" ref={mapContainer} />
     </div>
   );
