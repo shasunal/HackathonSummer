@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import ComplaintForm from '../components/ComplaintForm';
 import Earth from '../components/Earth';
 import '../css/Home.css'
+import {useNavigate} from 'react-router-dom';
 
 function Home(){
     const location = useLocation();
@@ -11,9 +12,10 @@ function Home(){
     const [missingInfo, setMissingInfo] = useState(initialMissingInfo || null);
     const [gptResult, setGptResult] = useState(null);
     const [showResult, setShowResult] = useState(false);  //Delay for waiting to show GPT response until zoom is finished
+    const navigate = useNavigate();
 
      // Called by ComplaintForm when GPT returns something
-    const handleResult = (result, missing) => {
+    const handleResult = (result, missing, zipcode) => {
     if (missing) {
         setMissingInfo(missing);
         setGptResult(null);
@@ -22,10 +24,14 @@ function Home(){
         setMissingInfo(null);
         setGptResult(result);
         setShowResult(false); // hide for now
+        console.log(gptResult);
+
 
         // Wait 2 seconds (adjust to match Earth zoom duration)
         setTimeout(() => {
-        setShowResult(true); // ✅ trigger fade-in display
+            navigate('/map', {state: { analysis: result, zipcode: zipcode}});
+
+        // setShowResult(true); // ✅ trigger fade-in display
         }, 2000);
     }
     };

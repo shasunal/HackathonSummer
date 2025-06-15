@@ -31,7 +31,7 @@ function ComplaintForm({ missingInfo, onResult }) {
 
             if (data.status === "complete") {
                 setSubmitted(true);
-                onResult(data.selected_fields, null);
+                onResult(data.selected_fields, null, data.zipcode);
                 return;
             }
 

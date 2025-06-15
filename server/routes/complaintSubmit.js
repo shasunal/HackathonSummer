@@ -88,19 +88,19 @@ router.post('/complaintSubmit', async (req, res) => {
         { role: "user", content: summaryPrompt }
       ]
     });
+        const zipcode = "10010";
+        const finalSummary = summaryResponse.choices[0].message.content.trim();
 
-    const finalSummary = summaryResponse.choices[0].message.content.trim();
-
-    return res.status(200).json({
-      status: "complete",
-      summary: finalSummary,
-      rawData: filteredData
-    });
-
-  } catch (error) {
-    console.error("🔥 complaintSubmit error:", error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+        return res.status(200).json({
+          status: "complete",
+          summary: finalSummary,
+          rawData: filteredData,
+          zipcode: zipcode
+        });
+    } catch (err) {
+        console.error('Error saving Complaint:', err);
+        res.status(500).json({ message: 'Server error during Complaint upload' });
+    }
 });
 
 export default router;
