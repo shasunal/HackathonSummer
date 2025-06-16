@@ -15,7 +15,6 @@ function Map() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [geojsonLoaded, setGeojsonLoaded] = useState(false);
   const [ranOnce, setRanOnce] = useState(false);
-  const [zipDict, setZipDict] = useState({});
 
   useEffect(() => {
     async function fetchZipData() {
@@ -26,10 +25,10 @@ function Map() {
         const dict = {};
         data.forEach(entry => {
           const zip = entry.zipCode?.trim(); // no .toString() needed, already string
-          dict[zip] = entry.data || "";
+          dict[zip] = entry.summary || "";
         });
         zipDictRef.current = dict;       
-
+        
         console.log("📦 Loaded ZIP dictionary:", dict);
       } catch (err) {
         console.error('❌ Failed to fetch ZIP data', err);
@@ -187,6 +186,28 @@ function Map() {
         map.current.getCanvas().style.cursor = '';
         popup.remove();
       });
+
+      map.current.on('click', 'zip-interactive', (e) => {
+        if (e.features.length > 0) {
+          const feature = e.features[0];
+          const props = feature.properties;
+          const zip = props.postalCode?.toString().trim();
+          const info = zipDictRef.current[zip] || "No data";
+
+          const lngLat = e.lngLat;
+
+          popup
+            .setLngLat(lngLat)
+            .setHTML(`
+              <div style="max-width: 250px;">
+                <strong>ZIP Code: ${zip}</strong><br/>
+                <em>${info}</em>
+              </div>
+            `)
+            .addTo(map.current);
+        }
+      });
+
 
       setMapLoaded(true);
       setGeojsonLoaded(true);
