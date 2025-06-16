@@ -24,45 +24,45 @@ router.post('/complaintSubmit', async (req, res) => {
 
     // 🧠 Step 1: GPT to extract context and zip
     const checkPrompt = `
-A user submitted this: "${complaint}"
+      A user submitted this: "${complaint}"
 
-You are a public safety assistant.
+      You are a public safety assistant.
 
-Your task is to:
-1. Check if the user has included:
-   - A location (zip code, neighborhood, or borough)
-   - A time of day (e.g. morning, night)
-   - User context (gender and/or age)
+      Your task is to:
+      1. Check if the user has included:
+        - A location (zip code, neighborhood, or borough)
+        - A time of day (e.g. morning, night)
+        - User context (gender and/or age)
 
-2. If any are missing, return:
-{
-  "status": "missing",
-  "missing": ["what's missing"]
-}
+      2. If any are missing, return:
+      {
+        "status": "missing",
+        "missing": ["what's missing"]
+      }
 
-3. If complete, also:
-   - Extract a zip code from the text if it's mentioned.
-   - If not explicitly mentioned, infer a representative zip code for the neighborhood or borough (e.g., use 10025 for "Manhattan", 11201 for "Brooklyn").
-   - Select 3–5 relevant fields from this schema for data lookup.
+      3. If complete, also:
+        - Extract a zip code from the text if it's mentioned.
+        - If not explicitly mentioned, infer a representative zip code for the neighborhood or borough (e.g., use 10025 for "Manhattan", 11201 for "Brooklyn").
+        - Select 3–5 relevant fields from this schema for data lookup.
 
-Schema:
-- zip_code
-- precincts_in_zip
-- dominant_precinct
-- violent_crime_count
-- violent_crimes_by_victim_gender
-- crime_rate_by_tour
-- avg_police_response_time
-- average_street_visibility
-- last_updated
+      Schema:
+      - zip_code
+      - precincts_in_zip
+      - dominant_precinct
+      - violent_crime_count
+      - violent_crimes_by_victim_gender
+      - crime_rate_by_tour
+      - avg_police_response_time
+      - average_street_visibility
+      - last_updated
 
-Respond with this JSON:
-{
-  "status": "complete",
-  "zip_code": "xxxxx",
-  "selected_fields": ["field1", "field2", ...]
-}
-`;
+      Respond with this JSON:
+      {
+        "status": "complete",
+        "zip_code": "xxxxx",
+        "selected_fields": ["field1", "field2", ...]
+      }
+    `;
 
     const gptResponse = await openai.chat.completions.create({
       model: "gpt-4",
@@ -105,15 +105,15 @@ Respond with this JSON:
 
     // 📢 Step 3: GPT summary from filtered data
     const summaryPrompt = `
-The user submitted this safety concern: "${complaint}"
+      The user submitted this safety concern: "${complaint}"
 
-You have access to filtered NYC public safety data:
-${JSON.stringify(filteredData, null, 2)}
+      You have access to filtered NYC public safety data:
+      ${JSON.stringify(filteredData, null, 2)}
 
-Give a **brief and clear summary** of whether it is safe for this person to travel there.
-Consider crime levels, time of day, and user context (gender/age).
-Avoid excessive detail. Maximum 7 sentences.
-`;
+      Give a **brief and clear summary** of whether it is safe for this person to travel there.
+      Consider crime levels, time of day, and user context (gender/age).
+      Avoid excessive detail. Maximum 7 sentences.
+    `;
 
     const summaryResponse = await openai.chat.completions.create({
       model: "gpt-4",

@@ -24,18 +24,14 @@ function Home(){
         setMissingInfo(null);
         setGptResult(result);
         setShowResult(false); // hide for now
-        console.log(gptResult);
 
 
         // Wait 2 seconds (adjust to match Earth zoom duration)
         setTimeout(() => {
             navigate('/map', {state: { analysis: result, zipcode: zipcode}});
-
-        // setShowResult(true); // ✅ trigger fade-in display
         }, 2000);
     }
     };
-
 
     return <div className = "home-container">
         <ComplaintForm missingInfo={missingInfo} onResult={handleResult} />

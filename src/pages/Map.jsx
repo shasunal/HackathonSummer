@@ -9,12 +9,36 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhc3VuYSIsImEiOiJjbWJheDkzankxYmNvMnFva24wb
 function Map() {
   const mapContainer = useRef(null); // connects to DOM
   const map = useRef(null); // the map instance
+  const zipDictRef = useRef({});
   const [zipCode, setZipCode] = useState('');
   const [isExpanded, setIsExpanded] = useState(true); // sidebar toggle
   const [mapLoaded, setMapLoaded] = useState(false);
   const [geojsonLoaded, setGeojsonLoaded] = useState(false);
   const [ranOnce, setRanOnce] = useState(false);
+  const [zipDict, setZipDict] = useState({});
 
+  useEffect(() => {
+    async function fetchZipData() {
+      try {
+        const response = await fetch('http://localhost:5001/zips');
+        const data = await response.json();
+        
+        const dict = {};
+        data.forEach(entry => {
+          const zip = entry.zipCode?.trim(); // no .toString() needed, already string
+          dict[zip] = entry.data || "";
+        });
+        zipDictRef.current = dict;       
+
+        console.log("📦 Loaded ZIP dictionary:", dict);
+      } catch (err) {
+        console.error('❌ Failed to fetch ZIP data', err);
+      }
+    }
+  
+    fetchZipData();
+  }, []);
+  
   const toggleSidebar = () => {
     setIsExpanded(prev => {
       const next = !prev;
@@ -29,11 +53,9 @@ function Map() {
       return next;
     });
   };
-  
 
   const location = useLocation();
-  const analysis = location.state?.analysis;
-  
+  const analysis = location.state?.analysis;  
   useEffect(() => {
     if (location.state?.zipcode) {
       setZipCode(location.state.zipcode);
@@ -50,7 +72,7 @@ function Map() {
     const features = map.current.querySourceFeatures('nyc-zips');
   
     const match = features.find(
-      (f) => f.properties.modzcta.toString() === zip
+      (f) => f.properties.postalCode.toString() === zip
 
     );
   
@@ -67,7 +89,6 @@ function Map() {
     } else {
       alert(`ZIP Code not found: ${zip}`);
     }
-    
   };
 
   useEffect(() => {
@@ -86,8 +107,6 @@ function Map() {
 
         
       });
-
-      
 
       map.current.addLayer({
         id: 'zip-interactive',
@@ -135,7 +154,8 @@ function Map() {
       
           hoveredId = e.features[0].id;
           const props = e.features[0].properties;
-          const zip = props.modzcta;
+          const zip = props.postalCode?.toString().trim();
+          const info = zipDictRef.current[zip] || "No data";
       
           map.current.setFeatureState(
             { source: 'nyc-zips', id: hoveredId },
@@ -147,7 +167,7 @@ function Map() {
             .setHTML(`
               <div style="max-width: 250px;">
                 <strong>ZIP Code: ${zip}</strong><br/>
-                <em>AI-generated summary</em>
+                <em>${info}</em>
               </div>
             `)
             .addTo(map.current);
@@ -170,29 +190,23 @@ function Map() {
 
       setMapLoaded(true);
       setGeojsonLoaded(true);
-
     });
   }, []);
 
   useEffect(() => {
-  if (mapLoaded && geojsonLoaded && zipCode && !ranOnce) {
-    console.log("Searching ZIP:", zipCode);
-    setTimeout(() => {
-      handleZipSearch();
-      setRanOnce(true);
-    }, 100);
-  }
-}, [mapLoaded, geojsonLoaded, zipCode]);
-
-  
+    if (mapLoaded && geojsonLoaded && zipCode && !ranOnce) {
+      setTimeout(() => {
+        handleZipSearch();
+        setRanOnce(true);
+      }, 100);
+    }
+  }, [mapLoaded, geojsonLoaded]);
 
   return (
     <div className="map-container">
       <div className={`sidebar ${isExpanded ? "expand" : "collapse"}`}>
-      
         {isExpanded && (
           <>
-
             <a href="/" className ='title'>BlockWatch</a>
               <label htmlFor="zip-search">Search by zip code</label>
               <input
@@ -218,16 +232,13 @@ function Map() {
           </>
         )}
 
-  <div className="toggle-wrapper">
-        <div className="toggle-btn" onClick={toggleSidebar}>
-          {isExpanded ? "◀" : "▶"}
+        <div className="toggle-wrapper">
+            <div className="toggle-btn" onClick={toggleSidebar}>
+              {isExpanded ? "◀" : "▶"}
+            </div>
         </div>
       </div>
 
-      </div>
-
-     
-      
       <div className="map-area" ref={mapContainer} />
     </div>
   );
