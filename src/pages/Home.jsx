@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ComplaintForm from '../components/ComplaintForm';
 import Earth from '../components/Earth';
@@ -13,6 +13,13 @@ function Home(){
     const [gptResult, setGptResult] = useState(null);
     const [showResult, setShowResult] = useState(false);  //Delay for waiting to show GPT response until zoom is finished
     const navigate = useNavigate();
+
+    // ✅ Force scroll and reflow
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'auto';
+        document.body.style.opacity = '1'; // Just in case some fade-out bug happens
+    }, []);
 
      // Called by ComplaintForm when GPT returns something
     const handleResult = (result, missing, zipcode) => {

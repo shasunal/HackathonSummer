@@ -39,6 +39,7 @@ textarea{
     line-height: 1;
     box-sizing: border-box;
     font-family: inherit;
+    min-height: 100px; /* baseline height */
 }
 
 button{
@@ -86,4 +87,59 @@ button:hover {
 @keyframes slide {
   0%   { background-position: 0% 0%; }
   100% { background-position: 200% 0%; }
+}
+
+@media (max-height: 850px) {
+  .form-popup {
+    top: 42%;
+    padding: 1.75rem;
+    width:70%;
+  }
+
+  textarea{
+    width: 100%;
+    min-height: 200px;
+  }
+}
+
+@media (max-height: 800px) {
+  .form-popup {
+    top: 35%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-height: 700px) {
+  .form-popup {
+    top: 40%;
+    padding: 1rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .form-popup {
+    top: 45%;
+    padding: 0.8rem;
+  }
+}
+
+@media (max-height: 500px) {
+  .form-popup {
+    top: 50%;
+    padding: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  textarea {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    min-height: 60px;
+    width: 80%;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.75rem;
+  }
+
 }
