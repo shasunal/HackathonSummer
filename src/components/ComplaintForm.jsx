@@ -13,7 +13,7 @@ function ComplaintForm({ missingInfo, onResult }) {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5001/complaintSubmit', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/complaintSubmit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ complaint: complaintInput }),
