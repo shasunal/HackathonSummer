@@ -227,10 +227,10 @@ function Map() {
     <div className="map-container">
       <div className={`sidebar ${isExpanded ? "expand" : "collapse"}`}>
         {isExpanded && (
-          <>
-            <a href="/" className ='title'>BlockWatch</a>
-              <label htmlFor="zip-search">Search by zip code</label>
-              <input
+          <div className='sidebar-contents'>
+            <Link to="/" className="title">BlockWatch</Link>
+            <label htmlFor="zip-search">Search by zip code</label>
+            <input
               id="zip-search"
               type="text"
               placeholder="e.g. 10010"
@@ -250,7 +250,7 @@ function Map() {
             <div className="backBtn">
                 <Link to="/" className="back-button">Submit another request</Link>
             </div>
-          </>
+          </div>
         )}
 
         <div className="toggle-wrapper">

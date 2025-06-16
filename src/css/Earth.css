@@ -1,39 +1,61 @@
 .earth-img {
-    position: fixed;
-    bottom: -150vh; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200vmin;
-    max-width: none;
-    z-index: 1;
-    object-fit: cover;
-    pointer-events: none;
-    animation: spin 120s linear infinite;
-  }
+  position: fixed;
+  bottom: -150vh; /* default desktop */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200vmin;
+  max-width: none;
+  z-index: 0;
+  object-fit: cover;
+  pointer-events: none;
+  animation: spin 120s linear infinite;
+}
 
-
+/* Animation keyframes */
 @keyframes spin {
-    from {
-      transform: translateX(-50%) rotate(0deg);
-    }
-    to {
-      transform: translateX(-50%) rotate(360deg);
-    }
+  from {
+    transform: translateX(-50%) rotate(0deg);
   }
-  
-  .zoom {
-    animation: zoomSpin 1.5s forwards ease-in;
+  to {
+    transform: translateX(-50%) rotate(360deg);
   }
-  
-  @keyframes zoomSpin {
-    from {
-      transform: translateX(-50%) rotate(0deg) scale(1);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(-50%) rotate(360deg) scale(5);
-      opacity: 0;
-    }
+}
+
+.zoom {
+  animation: zoomSpin 1.5s forwards ease-in;
+}
+
+@keyframes zoomSpin {
+  from {
+    transform: translateX(-50%) rotate(0deg) scale(1);
+    opacity: 1;
   }
-  
-  
+  to {
+    transform: translateX(-50%) rotate(360deg) scale(5);
+    opacity: 0;
+  }
+}
+
+/* ✅ Target medium phones like iPhone 14, Pixel 7, etc */
+@media (max-width: 500px) {
+  .earth-img {
+    bottom: -60vh;
+    width: 160vmin;
+  }
+}
+
+/* ✅ Target small phones like iPhone SE, older Androids */
+@media (max-width: 400px) {
+  .earth-img {
+    bottom: -40vh;
+    width: 140vmin;
+  }
+}
+
+/* ✅ Target ultra small phones like iPhone 4 */
+@media (max-width: 330px) {
+  .earth-img {
+    bottom: -50vh;
+    width: 130vmin;
+  }
+}
