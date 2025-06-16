@@ -1,0 +1,122 @@
+.map-container {
+    display: flex;
+    position:relative;
+    height: 100vh;
+    width: 100vw;
+    overflow-y: hidden;
+   
+  }
+  
+  .sidebar {
+    width:25%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: rgba(237, 237, 237, 0.744);
+    height: 100vh;
+    transition: width 0.3s ease;
+  
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    z-index: 10;
+  
+    
+  }
+  
+  .sidebar.expand {
+    width: 25%;
+
+  }
+  
+  .sidebar.collapse {
+    width: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .toggle-wrapper {
+    height: 100vh;
+    width:30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: -30px;
+    top:0;
+    z-index: 1000;
+
+    background-color: rgba(237, 237, 237, 0.744);
+  }
+  
+  .toggle-btn {
+    width: 30px;
+    height: 30px;
+   
+    color: rgb(0, 0, 0);
+    border-radius: 0 5px 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 30px;
+  }
+  
+  
+  
+  
+  .map-area {
+    position: absolute;
+    flex-grow: 1;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    top:0;
+    left:0;
+
+   
+  }
+  
+
+  .title{
+    text-decoration: none;
+    color: rgb(34, 34, 167);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    padding-bottom: 3rem;
+    text-align: center;
+  }
+
+  .backBtn{
+    text-align: center;
+    padding-top: 2rem;
+  }
+
+  .back-button{
+    text-decoration: none;
+    background-color: aliceblue;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    font-weight: 300;
+    box-shadow: 1px 0px 4px 0px rgba(0,0,0,0.75);
+    color:black;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .back-button:hover{
+    box-shadow: 1px 0px 11px 0px rgba(0,0,0,0.75);
+    background-color: rgb(255, 221, 0);
+  }
+  .issues{
+    font-family: Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+    padding-top:2rem ;
+    font-size: 0.8rem;
+  }
+
+  .paragraph{
+    text-decoration: none !important;
+    text-align: left;
+  }

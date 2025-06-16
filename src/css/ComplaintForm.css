@@ -1,0 +1,89 @@
+
+
+.form-popup{
+    text-align: center;
+    position:fixed;
+    top:30%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 5px;
+    z-index: 10;
+    width:60%;
+    box-sizing: border-box;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+.form-group{
+    margin-bottom: 1.5rem;
+}
+
+label span{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: darkslategray; 
+}
+
+textarea{
+    width: 100%;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid gainsboro;
+    resize: vertical;
+    font-size: 1rem;
+    line-height: 1;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+button{
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    border:none;
+    border-radius:5px;
+}
+
+button:hover {
+    background-color: #333;
+  }
+
+.form-actions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.continue-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: blue;
+    text-decoration:none;
+  }
+  .continue-link:hover {
+    text-decoration: underline;
+  }
+
+.loading-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #00b4d8, #90e0ef, #00b4d8);
+  background-size: 200% 100%;
+  animation: slide 1s linear infinite;
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+
+@keyframes slide {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
