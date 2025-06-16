@@ -19,7 +19,7 @@ function Map() {
   useEffect(() => {
     async function fetchZipData() {
       try {
-        const response = await fetch('http://localhost:5001/zips');
+        const response = await fetch( `${import.meta.env.VITE_API_BASE_URL}/zips`);
         const data = await response.json();
         
         const dict = {};
