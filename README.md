@@ -9,3 +9,10 @@
 - MongoDB
 - Express
 - OpenAI
+
+## Setup Instructions
+```bash
+git clone https://github.com/shasunal/HackathonSummer.git
+cd HackathonSummer
+npm install
+npm start
